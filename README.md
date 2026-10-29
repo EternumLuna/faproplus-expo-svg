@@ -1,4 +1,4 @@
-# FontAwesome Pro+ Expo SVG
+# FontAwesome Pro Expo SVG
 
 Zero-overhead, production-grade Font Awesome Pro+ SVG icon library for React Native and Expo apps.
 
@@ -216,28 +216,70 @@ flowchart TD
     B -->|Case B: Dynamic name| D["Requires ONLY target family dictionary<br/>require('.../solid.json')[dynamicName]"]
     C --> E["Metro Bundler"]
     D --> E
-    E --> F["Zero Unused Icons in Final Mobile Bundle 🎉"]
+    E --> F["Zero Unused Icons in Final Mobile Bundle"]
 ```
 
 ---
 
-## FAQ & Troubleshooting
+## Troubleshooting & FAQ
 
-### Why is my icon not updating after adding the Babel plugin?
-Metro aggressively caches transformed files. Run:
-```bash
-npx expo start -c
-```
-or
-```bash
-npm start -- --reset-cache
-```
+### 1. `Unable to resolve "./generated/types"` or `Invalid call: require('./data/${family}.json')`
 
-### Does it work without the Babel plugin?
-Yes! The component includes a runtime fallback for testing environments (e.g., Jest) or rapid prototyping. However, registering `'fontawesome-pro-expo-svg/babel'` is strongly recommended for production apps to achieve true zero-unused-icon bundle sizes.
+In React Native, Metro bundler strictly prohibits dynamic `require()` calls with template strings (e.g. `require('./data/' + family + '.json')`). Older pre-releases or stale caches may trigger this error.
+
+**Solution:**
+1. Upgrade to the latest version of `fontawesome-pro-expo-svg`:
+   ```bash
+   npx expo install fontawesome-pro-expo-svg@latest
+   # or
+   npm install fontawesome-pro-expo-svg@latest
+   ```
+2. Clear the Metro bundler cache completely:
+   ```bash
+   npx expo start -c
+   # or for bare React Native:
+   npm start -- --reset-cache
+   ```
+3. If using Watchman (macOS/Linux), clear watchman watches:
+   ```bash
+   watchman watch-del-all && npx expo start -c
+   ```
 
 ---
 
-## Official License
+### 2. Icons not updating or Babel plugin seems inactive
+
+Metro caches transformed files aggressively. Whenever you add or edit `babel.config.js`:
+1. Stop your development server (`Ctrl + C`).
+2. Restart Metro with clean cache:
+   ```bash
+   npx expo start -c
+   ```
+
+---
+
+### 3. Duotone icon appears as a single solid color
+
+Duotone icons (`duotone`, `jelly-duo-regular`, `sharp-duotone-solid`, etc.) default `secondaryColor` to `color` with `secondaryOpacity={0.4}`. To display distinct layers:
+```tsx
+<FaProPlus
+  family="jelly-duo-regular"
+  name="bell"
+  size={28}
+  color="#2563EB"          /* Primary layer (e.g. blue) */
+  secondaryColor="#93C5FD" /* Secondary layer (e.g. light blue) */
+  secondaryOpacity={0.5}
+/>
+```
+
+---
+
+### 4. Does it work without the Babel plugin?
+
+Yes! `<FaProPlus />` contains a runtime fallback dictionary for tests (like Jest) and quick prototypes. However, adding `'fontawesome-pro-expo-svg/babel'` to `babel.config.js` is **strongly recommended** for production to guarantee that unused icons and families are 100% excluded from your bundle.
+
+---
+
+## License
 
 Font Awesome icons are subject to the [Font Awesome Pro License](https://fontawesome.com/license).

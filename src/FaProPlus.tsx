@@ -2,20 +2,24 @@ import React from "react"
 import Svg, { Path, SvgProps } from "react-native-svg"
 import { FamilyIconMap, IconFamily, IconTuple } from "./types"
 
-// Fallback runtime dictionary cache for testing or un-transformed usage
+// Fallback runtime dictionary cache for testing (e.g. Node/Jest environments)
 const runtimeFamilyCache: Record<string, Record<string, IconTuple>> = {}
 
 function getFallbackData(family: string, name: string): IconTuple | undefined {
   try {
-    if (!runtimeFamilyCache[family]) {
-      // Lazy load family JSON if running in an environment that supports dynamic require (e.g., Node/Jest)
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      runtimeFamilyCache[family] = require(`./data/${family}.json`)
+    // Avoid Metro's static require() scanner by safely accessing Node's module loader if available
+    const nodeRequire = typeof module !== "undefined" && typeof module.require === "function" ? module.require.bind(module) : null
+
+    if (nodeRequire) {
+      if (!runtimeFamilyCache[family]) {
+        runtimeFamilyCache[family] = nodeRequire(`./data/${family}.json`)
+      }
+      return runtimeFamilyCache[family]?.[name]
     }
-    return runtimeFamilyCache[family]?.[name]
   } catch {
     return undefined
   }
+  return undefined
 }
 
 declare const __DEV__: boolean | undefined
@@ -40,12 +44,12 @@ export interface FaProPlusProps<F extends IconFamily = IconFamily> extends Omit<
 export function FaProPlus<F extends IconFamily = IconFamily>(props: FaProPlusProps<F>): React.ReactElement | null {
   const { family, name, size = 24, color = "#000000", secondaryColor, secondaryOpacity, __resolvedData, ...svgProps } = props
 
-  // Use compile-time inlined data if injected by Babel, otherwise attempt runtime fallback
+  // Use compile-time inlined data if injected by Babel, otherwise attempt Node/Jest runtime fallback
   const iconData: IconTuple | undefined | null = __resolvedData !== undefined ? __resolvedData : getFallbackData(family, name as string)
 
   if (!iconData || !Array.isArray(iconData) || iconData.length < 2) {
     if (typeof __DEV__ !== "undefined" && __DEV__) {
-      console.warn(`[FaProPlus] Icon "${String(name)}" was not found in family "${String(family)}".`)
+      console.warn(`[FaProPlus] Icon "${String(name)}" (family: "${String(family)}") has no resolved data. Ensure "fontawesome-pro-expo-svg/babel" is registered in your babel.config.js.`)
     }
     return null
   }

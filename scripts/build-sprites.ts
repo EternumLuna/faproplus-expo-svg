@@ -12,6 +12,8 @@ const SPRITES_DIR = path.join(ROOT_DIR, "sprites")
 const DIST_DATA_DIR = path.join(ROOT_DIR, "dist", "data")
 const SRC_TYPES_PATH = path.join(ROOT_DIR, "src", "generated", "types.d.ts")
 const DIST_TYPES_PATH = path.join(ROOT_DIR, "dist", "generated", "types.d.ts")
+const SRC_TYPES_JS_PATH = path.join(ROOT_DIR, "src", "generated", "types.js")
+const DIST_TYPES_JS_PATH = path.join(ROOT_DIR, "dist", "generated", "types.js")
 
 /**
  * Extracts attributes from an XML/SVG tag string.
@@ -184,6 +186,12 @@ export async function buildSprites(): Promise<void> {
 
   fs.writeFileSync(SRC_TYPES_PATH, typesContent, "utf8")
   fs.writeFileSync(DIST_TYPES_PATH, typesContent, "utf8")
+
+  // Generate empty CommonJS fallback file so Metro/Node never fails resolving ./generated/types
+  const emptyJsContent = '"use strict";\nObject.defineProperty(exports, "__esModule", { value: true });\n'
+  fs.writeFileSync(SRC_TYPES_JS_PATH, emptyJsContent, "utf8")
+  fs.writeFileSync(DIST_TYPES_JS_PATH, emptyJsContent, "utf8")
+
   console.log(`[build-sprites] Generated types at: ${SRC_TYPES_PATH} and ${DIST_TYPES_PATH}`)
 
   const duration = ((Date.now() - startTime) / 1000).toFixed(2)
