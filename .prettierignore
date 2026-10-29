@@ -1,0 +1,11 @@
+node_modules
+.prettierrc.mjs
+package-lock.json
+tsconfig.json
+sprites
+README.md
+LICENSE
+ex
+temp
+mytemp
+dist

@@ -1,0 +1,90 @@
+{
+  "name": "fontawesome-pro-expo-svg",
+  "version": "1.0.0-dev.1",
+  "description": "Font Awesome Pro Plus SVG icons and zero-overhead Babel plugin for React Native & Expo",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EternumLuna/faproplus-expo-svg.git"
+  },
+  "keywords": [
+    "font-awesome-pro",
+    "font-awesome",
+    "font-awesome-pro-svg",
+    "font-awesome-pro-expo-svg",
+    "font-awesome-pro-react-svg",
+    "expo",
+    "react-native",
+    "react-native-svg",
+    "babel-plugin"
+  ],
+  "author": "EternumLuna <lunaeternum@protonmail.com> (https://github.com/EternumLuna/)",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/EternumLuna/faproplus-expo-svg/issues"
+  },
+  "homepage": "https://github.com/EternumLuna/faproplus-expo-svg#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./babel": {
+      "types": "./dist/babel-plugin.d.ts",
+      "import": "./dist/babel-plugin.js",
+      "require": "./dist/babel-plugin.js"
+    },
+    "./data/*": "./dist/data/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "babel",
+    "README.md"
+  ],
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*",
+    "react-native-svg": "*"
+  },
+  "peerDependenciesMeta": {
+    "react-native": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.0",
+    "@babel/types": "^7.29.0",
+    "@types/babel__core": "^7.20.5",
+    "@types/node": "^25.5.0",
+    "@types/react": "^19.2.14",
+    "fast-xml-parser": "^5.5.8",
+    "prettier": "^3.9.10",
+    "react": "^19.2.4",
+    "react-native": "^0.84.1",
+    "react-native-svg": "^15.15.1",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3"
+  },
+  "scripts": {
+    "build:sprites": "tsx scripts/build-sprites.ts",
+    "build:ts": "tsc",
+    "build": "npm run build:sprites && npm run build:ts",
+    "test": "tsx scripts/test-package.ts",
+    "format": "prettier --write .",
+    "check": "prettier --check .",
+    "prepublishOnly": "npm run build",
+    "version-patch": "npm --no-git-tag-version version patch",
+    "version-minor": "npm --no-git-tag-version version minor",
+    "version-major": "npm --no-git-tag-version version major",
+    "pre-patch": "npm --no-git-tag-version version prepatch && npm --no-git-tag-version version prerelease --preid dev",
+    "pre-minor": "npm --no-git-tag-version version preminor && npm --no-git-tag-version version prerelease --preid dev",
+    "pre-major": "npm --no-git-tag-version version premajor && npm --no-git-tag-version version prerelease --preid dev",
+    "pre-release": "npm --no-git-tag-version version prerelease"
+  }
+}
