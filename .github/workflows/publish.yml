@@ -1,6 +1,6 @@
 name: Build & Publish Public NPM Package
 
-on:
+"on":
   workflow_dispatch:
 
 permissions:
